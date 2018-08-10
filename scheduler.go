@@ -13,6 +13,7 @@ type Scheduler struct {
 	queue	*queue
 	quit	chan bool
 	push	chan *Job
+	pop		chan *Job
 	workers	[]*worker
 }
 
@@ -54,7 +55,7 @@ func (s *Scheduler) RemoveJob(job *Job) bool {
 	if !job.alive {
 		return false
 	}
-	s.queue.unschedule(job)
+	s.pop <- job
 	return true
 }
 
@@ -75,6 +76,8 @@ func (s *Scheduler) Every(lapse time.Duration) *Scheduler {
 				s.queue.advance(tnow)
 			case job := <- s.push:
 				s.queue.schedule(job)
+			case job := <- s.pop:
+				s.queue.unschedule(job)
 			case <- s.quit:
 				tick.Stop()
 				//Destroy all the workers once the timer stops
