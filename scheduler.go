@@ -31,6 +31,7 @@ func New(wsize, csize int) *Scheduler {
 		queue: newQueue(exec),
 		quit: make(chan bool),
 		push: make(chan *Job),
+		pop: make(chan *Job),
 		workers: ws,
 	}
 }
