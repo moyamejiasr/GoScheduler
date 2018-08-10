@@ -66,6 +66,7 @@ func (s *Scheduler) Stop() {
 	s.quit <- true
 }
 
+//Init the Scheduler with a ticker at an specified interval.
 func (s *Scheduler) Every(lapse time.Duration) *Scheduler {
 	tick := time.NewTicker(lapse)
 	go func() {
